@@ -72,3 +72,7 @@ function importFromJsonFile(event) {
     };
     fileReader.readAsText(event.target.files[0]);
 }
+
+function saveQuotes() {
+    localStorage.setItem('quotes', JSON.stringify(quotes));
+}
