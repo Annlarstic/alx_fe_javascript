@@ -4,20 +4,30 @@ const quotes = [
     { text: "Success is not the key to happiness. Happiness is the key to success.", category: "Success" }
 ];
 
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("newQuote").addEventListener("click", showRandomQuote);
+});
+
 function showRandomQuote() {
     const quoteDisplay = document.getElementById("quoteDisplay");
+    if (!quoteDisplay) return;
     if (quotes.length === 0) {
-        quoteDisplay.textContent = "No quotes available. Please add some!";
+        quoteDisplay.innerHTML = "No quotes available. Please add some!";
         return;
     }
     const randomIndex = Math.floor(Math.random() * quotes.length);
     const randomQuote = quotes[randomIndex];
-    quoteDisplay.textContent = `${randomQuote.text} - (${randomQuote.category})`;
+    quoteDisplay.innerHTML = `<p>${randomQuote.text} - <strong>(${randomQuote.category})</strong></p>`;
 }
 
 function addQuote() {
-    const newQuoteText = document.getElementById("newQuoteText").value.trim();
-    const newQuoteCategory = document.getElementById("newQuoteCategory").value.trim();
+    const newQuoteTextElement = document.getElementById("newQuoteText");
+    const newQuoteCategoryElement = document.getElementById("newQuoteCategory");
+    
+    if (!newQuoteTextElement || !newQuoteCategoryElement) return;
+    
+    const newQuoteText = newQuoteTextElement.value.trim();
+    const newQuoteCategory = newQuoteCategoryElement.value.trim();
     
     if (newQuoteText === "" || newQuoteCategory === "") {
         alert("Please enter both a quote and a category.");
@@ -25,9 +35,8 @@ function addQuote() {
     }
     
     quotes.push({ text: newQuoteText, category: newQuoteCategory });
-    document.getElementById("newQuoteText").value = "";
-    document.getElementById("newQuoteCategory").value = "";
+    newQuoteTextElement.value = "";
+    newQuoteCategoryElement.value = "";
     showRandomQuote();
 }
 
-document.getElementById("newQuote").addEventListener("click", showRandomQuote);
