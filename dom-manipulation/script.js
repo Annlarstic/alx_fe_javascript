@@ -51,6 +51,7 @@ function createAddQuoteForm() {
     `;
     document.body.appendChild(formContainer);
 
+// Export the quotes as a JSON file
 function exportToJson() {
     const jsonBlob = new Blob([JSON.stringify(quotes)], { type: 'application/json' });
     const link = document.createElement('a');
@@ -59,6 +60,7 @@ function exportToJson() {
     link.click();
 }
 
+// Import quotes from a JSON file
 function importFromJsonFile(event) {
     const fileReader = new FileReader();
     fileReader.onload = function(event) {
