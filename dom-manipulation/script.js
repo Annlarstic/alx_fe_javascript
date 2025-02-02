@@ -50,3 +50,25 @@ function createAddQuoteForm() {
         <button onclick="addQuote()">Add Quote</button>
     `;
     document.body.appendChild(formContainer);
+
+// Export the quotes as a JSON file
+function exportToJson() {
+    const jsonBlob = new Blob([JSON.stringify(quotes)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(jsonBlob);
+    link.download = 'quotes.json';
+    link.click();
+}
+
+// Import quotes from a JSON file
+function importFromJsonFile(event) {
+    const fileReader = new FileReader();
+    fileReader.onload = function(event) {
+        const importedQuotes = JSON.parse(event.target.result);
+        quotes.push(...importedQuotes);
+        saveQuotes();
+        alert('Quotes imported successfully!');
+        showRandomQuote();
+    };
+    fileReader.readAsText(event.target.files[0]);
+}
