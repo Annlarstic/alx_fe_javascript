@@ -99,3 +99,58 @@ function importFromJsonFile(event) {
     };
     fileReader.readAsText(event.target.files[0]);
 }
+
+
+
+
+
+// ---------------------------- Category Filter Logic --------------------------
+
+// Populate categories dynamically
+function populateCategories() {
+    const categoryFilter = document.getElementById("categoryFilter");
+    if (!categoryFilter) return;
+    
+    // Clear existing options
+    categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+    
+    // Get unique categories
+    const categories = [...new Set(quotes.map(quote => quote.category))];
+    
+    // Populate dropdown with categories
+    categories.forEach(category => {
+        const option = document.createElement("option");
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+    });
+}
+
+// Filter quotes based on the selected category
+function filterQuotes() {
+    const selectedCategory = document.getElementById("categoryFilter").value;
+    localStorage.setItem('categoryFilter', selectedCategory); // Save selected category filter
+    
+    const quoteDisplay = document.getElementById("quoteDisplay");
+    if (!quoteDisplay) return;
+    
+    const filteredQuotes = selectedCategory === "all"
+        ? quotes
+        : quotes.filter(quote => quote.category === selectedCategory);
+    
+    if (filteredQuotes.length === 0) {
+        quoteDisplay.innerHTML = "No quotes available in this category. Please add some!";
+        return;
+    }
+    
+    quoteDisplay.innerHTML = filteredQuotes.map(quote => `<p>${quote.text} - <strong>(${quote.category})</strong></p>`).join("");
+}
+
+// Ensure filter is applied on page load if saved in local storage
+document.addEventListener("DOMContentLoaded", () => {
+    const savedFilter = localStorage.getItem('categoryFilter');
+    if (savedFilter) {
+        document.getElementById("categoryFilter").value = savedFilter;
+        filterQuotes();
+    }
+});
