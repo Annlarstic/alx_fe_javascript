@@ -223,3 +223,34 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initial sync when the page loads
     syncQuotesWithServer();
 });
+
+
+
+
+
+
+
+
+
+
+
+function showNotification(message) {
+    const notification = document.createElement("div");
+    notification.className = "notification";
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000); 
+}
+
+async function syncQuotesWithServer() {
+    const serverQuotes = await fetchQuotesFromServer();
+    const mergedQuotes = mergeQuotes(quotes, serverQuotes);
+    quotes = mergedQuotes;
+    saveQuotes();
+    populateCategories(); 
+    filterQuotes(); 
+    showNotification('Quotes synced with server!'); 
+}
