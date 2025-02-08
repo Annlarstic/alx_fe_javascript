@@ -154,3 +154,72 @@ document.addEventListener("DOMContentLoaded", () => {
         filterQuotes();
     }
 });
+
+
+
+
+
+
+
+
+
+// Simulate fetching quotes from the server
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts'); // Replace with your server URL
+        const serverQuotes = await response.json();
+        return serverQuotes.map(quote => ({
+            text: quote.title,
+            category: 'Server'
+        }));
+    } catch (error) {
+        console.error('Error fetching quotes from server:', error);
+        return [];
+    }
+}
+
+// Simulate posting quotes to the server
+async function postQuotesToServer(quotes) {
+    try {
+        await fetch('https://jsonplaceholder.typicode.com/posts', { // Replace with your server URL
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(quotes)
+        });
+    } catch (error) {
+        console.error('Error posting quotes to server:', error);
+    }
+}
+
+// Sync local quotes with server quotes
+async function syncQuotesWithServer() {
+    const serverQuotes = await fetchQuotesFromServer();
+    const mergedQuotes = mergeQuotes(quotes, serverQuotes);
+    quotes = mergedQuotes;
+    saveQuotes();
+    populateCategories(); // Update categories in the dropdown
+    filterQuotes(); // Apply filter after sync
+    alert('Quotes synced with the server successfully!');
+}
+
+// Merge local quotes and server quotes, resolving conflicts
+function mergeQuotes(localQuotes, serverQuotes) {
+    // For simplicity, server's data takes precedence
+    const merged = [...serverQuotes];
+    localQuotes.forEach(localQuote => {
+        if (!serverQuotes.some(serverQuote => serverQuote.text === localQuote.text)) {
+            merged.push(localQuote);
+        }
+    });
+    return merged;
+}
+
+// Periodically sync quotes with the server
+setInterval(syncQuotesWithServer, 60000); // Sync every 60 seconds
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Initial sync when the page loads
+    syncQuotesWithServer();
+});
